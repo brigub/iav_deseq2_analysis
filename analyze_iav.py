@@ -3,14 +3,14 @@ import argparse
 
 def load_deseq2_results(filename):
     """
-    Lee resultados DESeq2 desde un archivo TSV.
+    Lee resultados DESeq2 desde un archivo TSV adaptado a las columnas reales.
     """
 
     genes = []
 
     with open(filename) as file:
 
-        next(file)
+        next(file)  # Salta el encabezado
 
         for line in file:
 
@@ -21,17 +21,21 @@ def load_deseq2_results(filename):
 
             parts = line.split("\t")
 
-            if len(parts) < 3:
+            # AJUSTE 1: El archivo real tiene 7 columnas (índices del 0 al 6)
+            if len(parts) < 7:
                 continue
 
             gene = parts[0]
 
             try:
-
-                log2_fold_change = float(parts[1])
-                padj = float(parts[2])
+                # AJUSTE 2: Mapear los índices correctos del TSV de DESeq2
+                log2_fold_change = float(
+                    parts[2]
+                )  # log2FoldChange está en la col 3 (índice 2)
+                padj = float(parts[6])  # padj está en la col 7 (índice 6)
 
             except ValueError:
+                # Ignora filas vacías, encabezados repetidos o valores "NA" de forma segura
                 continue
 
             genes.append((gene, log2_fold_change, padj))
