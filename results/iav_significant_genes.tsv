@@ -1,0 +1,3 @@
+gene	log2FoldChange	padj	status
+IFIT1	2.5	0.001	upregulated
+CXCL10	-2.2	0.003	downregulated
